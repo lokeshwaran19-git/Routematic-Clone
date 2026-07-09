@@ -21,8 +21,12 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           }`
         }
       >
-        <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
-        <span className="fw-medium">{children}</span>
+        {({ isActive }) => (
+          <>
+            <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+            <span className="fw-medium">{children}</span>
+          </>
+        )}
       </NavLink>
     </li>
   );
