@@ -1,0 +1,56 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #121212 !important;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+/* Custom Scrollbar Styles for Sleek Premium Look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3c3c3c;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f4f4f;
+}
+
+/* Hover effects */
+.hover-bg-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  transition: background-color 0.2s ease;
+}
+
+/* Custom input style improvements */
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25) !important;
+  border-color: #007bff !important;
+}
+
+/* Card hover animation */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+}
