@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
+import { motion } from 'framer-motion';
+import { Car, Users, Navigation, Clock, ArrowRight, ListChecks } from 'lucide-react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.08 } }
+};
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+};
 
 const TransportDashboard = () => {
-  const [metrics, setMetrics] = useState({
-    vehicles: 0,
-    drivers: 0,
-    trips: 0,
-    pendingBookings: 0
-  });
+  const [metrics, setMetrics] = useState({ vehicles: 0, drivers: 0, trips: 0, pendingBookings: 0 });
   const [pendingList, setPendingList] = useState([]);
 
   const fetchDashboardData = async () => {
@@ -17,133 +23,144 @@ const TransportDashboard = () => {
       const dRes = await api.get('/transport/drivers');
       const tRes = await api.get('/transport/trips');
       const bRes = await api.get('/transport/bookings');
-
       const unassignedBookings = bRes.data.filter(b => b.bookingStatus === 'PENDING');
-      
-      setMetrics({
-        vehicles: vRes.data.length,
-        drivers: dRes.data.length,
-        trips: tRes.data.length,
-        pendingBookings: unassignedBookings.length
-      });
-      setPendingList(unassignedBookings.slice(0, 5)); 
+      setMetrics({ vehicles: vRes.data.length, drivers: dRes.data.length, trips: tRes.data.length, pendingBookings: unassignedBookings.length });
+      setPendingList(unassignedBookings.slice(0, 5));
     } catch (err) {
       console.error(err);
     }
   };
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
+  useEffect(() => { fetchDashboardData(); }, []);
+
+  const statCards = [
+    { title: 'Total Vehicles', value: metrics.vehicles, icon: Car, gradient: 'linear-gradient(135deg, #60a5fa, #3b82f6)', link: '/transport/vehicles', linkText: 'Manage Inductions' },
+    { title: 'Total Drivers', value: metrics.drivers, icon: Users, gradient: 'linear-gradient(135deg, #34d399, #10b981)', link: '/transport/drivers', linkText: 'Manage Drivers' },
+    { title: 'Scheduled Trips', value: metrics.trips, icon: Navigation, gradient: 'linear-gradient(135deg, #a78bfa, #8b5cf6)', link: '/transport/trips', linkText: 'Schedule Trips' },
+    { title: 'Pending Bookings', value: metrics.pendingBookings, icon: Clock, gradient: 'linear-gradient(135deg, #f87171, #ef4444)', link: '/transport/trips', linkText: 'Assign Now' },
+  ];
 
   return (
-    <div className="container-fluid py-4 bg-dark text-white min-vh-100">
-      <h1 className="fw-bold mb-4">Transport Team Dashboard</h1>
+    <div className="pb-4">
+      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-4">
+        <h1 className="fw-bold mb-1">Transport Team Dashboard</h1>
+        <p className="text-secondary small mb-0">Monitor fleet metrics, manage bookings, and coordinate trips.</p>
+      </motion.div>
 
-      <div className="row g-3 mb-4">
-        <div className="col-md-3">
-          <div className="card bg-primary text-white border-0 shadow-sm">
-            <div className="card-body">
-              <h6 className="text-uppercase font-monospace text-light">Total Vehicles</h6>
-              <h2 className="fw-bold">{metrics.vehicles}</h2>
-              <Link to="/transport/vehicles" className="text-white small text-decoration-none">Manage Inductions →</Link>
+      {/* Stat Cards */}
+      <motion.div className="row g-3 mb-4" variants={containerVariants} initial="hidden" animate="show">
+        {statCards.map((card, idx) => (
+          <motion.div key={idx} variants={itemVariants} className="col-6 col-md-3" whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+            <div className="glass-panel rounded-4 p-3 h-100 position-relative overflow-hidden">
+              <div className="position-absolute top-0 end-0 p-3 opacity-10" style={{ transform: 'scale(2)' }}>
+                <card.icon size={40} />
+              </div>
+              <div className="d-flex flex-column gap-1">
+                <span className="text-secondary small fw-medium">{card.title}</span>
+                <span className="fw-bold" style={{ fontSize: '2rem', lineHeight: 1, background: card.gradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{card.value}</span>
+                <Link to={card.link} className="text-primary small text-decoration-none d-flex align-items-center gap-1 mt-1">
+                  {card.linkText} <ArrowRight size={14} />
+                </Link>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="card bg-success text-white border-0 shadow-sm">
-            <div className="card-body">
-              <h6 className="text-uppercase font-monospace text-light">Total Drivers</h6>
-              <h2 className="fw-bold">{metrics.drivers}</h2>
-              <Link to="/transport/drivers" className="text-white small text-decoration-none">Manage Drivers →</Link>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="card bg-info text-dark border-0 shadow-sm">
-            <div className="card-body">
-              <h6 className="text-uppercase font-monospace text-muted">All Scheduled Trips</h6>
-              <h2 className="fw-bold">{metrics.trips}</h2>
-              <Link to="/transport/trips" className="text-dark small text-decoration-none fw-bold">Schedule Trips →</Link>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="card bg-danger text-white border-0 shadow-sm">
-            <div className="card-body">
-              <h6 className="text-uppercase font-monospace text-light">Pending Bookings</h6>
-              <h2 className="fw-bold">{metrics.pendingBookings}</h2>
-              <Link to="/transport/trips" className="text-white small text-decoration-none">Assign Now →</Link>
-            </div>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        ))}
+      </motion.div>
 
       <div className="row g-4">
+        {/* Pending Bookings Table */}
         <div className="col-lg-7">
-          <div className="card bg-secondary text-white border-0 shadow-sm">
-            <div className="card-header bg-dark border-bottom border-secondary">
-              <h5 className="mb-0 fw-bold">Recent Cab Booking Requests</h5>
-            </div>
-            <div className="card-body p-4">
-              <div className="table-responsive">
-                <table className="table table-dark table-striped align-middle mb-0">
-                  <thead>
-                    <tr>
-                      <th>Employee</th>
-                      <th>Route (Pickup/Drop)</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {pendingList.length === 0 ? (
-                      <tr>
-                        <td colSpan="3" className="text-center py-3 text-muted">No pending bookings. All employees are mapped!</td>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+            <div className="glass-panel rounded-4 overflow-hidden">
+              <div className="p-4 border-bottom" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center gap-2">
+                    <Clock size={22} className="text-warning" />
+                    <h5 className="mb-0 fw-bold">Recent Booking Requests</h5>
+                  </div>
+                  <Link to="/transport/trips" className="btn btn-sm glass-panel text-white border-0 px-3 py-2 rounded-3 d-flex align-items-center gap-1">
+                    Open Board <ArrowRight size={14} />
+                  </Link>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="table-responsive">
+                  <table className="table align-middle mb-0" style={{ color: 'var(--text-primary)' }}>
+                    <thead>
+                      <tr style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                        <th className="text-secondary small fw-medium border-0">Employee</th>
+                        <th className="text-secondary small fw-medium border-0">Route</th>
+                        <th className="text-secondary small fw-medium border-0">Status</th>
                       </tr>
-                    ) : (
-                      pendingList.map((b) => (
-                        <tr key={b.id}>
-                          <td><strong>{b.employee.user.name}</strong> ({b.employee.employeeId})</td>
-                          <td>P: {b.pickupLocation} | D: {b.dropLocation}</td>
-                          <td><span className="badge bg-warning text-dark">{b.bookingStatus}</span></td>
+                    </thead>
+                    <tbody>
+                      {pendingList.length === 0 ? (
+                        <tr>
+                          <td colSpan="3" className="text-center py-4 text-secondary border-0">
+                            <Navigation size={32} className="mb-2 opacity-50" />
+                            <p className="mb-0 small">No pending bookings. All employees are mapped!</p>
+                          </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <div className="mt-3 text-end">
-                <Link to="/transport/trips" className="btn btn-sm btn-outline-light">Open Trip Assignment Board</Link>
+                      ) : (
+                        pendingList.map((b) => (
+                          <tr key={b.id} style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+                            <td className="border-0">
+                              <strong>{b.employee.user.name}</strong>
+                              <div className="text-secondary small">{b.employee.employeeId}</div>
+                            </td>
+                            <td className="border-0">
+                              <div className="small">📍 {b.pickupLocation}</div>
+                              <div className="small text-secondary">🏁 {b.dropLocation}</div>
+                            </td>
+                            <td className="border-0">
+                              <span className="badge rounded-pill" style={{ background: 'rgba(251,191,36,0.15)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)' }}>
+                                {b.bookingStatus}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
+        {/* Workflow Guide */}
         <div className="col-lg-5">
-          <div className="card bg-secondary text-white border-0 shadow-sm">
-            <div className="card-header bg-dark border-bottom border-secondary">
-              <h5 className="mb-0 fw-bold">Transport Team Workflow</h5>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <div className="glass-panel rounded-4 overflow-hidden">
+              <div className="p-4 border-bottom" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                <div className="d-flex align-items-center gap-2">
+                  <ListChecks size={22} className="text-primary" />
+                  <h5 className="mb-0 fw-bold">Transport Team Workflow</h5>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="d-flex flex-column gap-3">
+                  {[
+                    { num: '1', title: 'Induct Vehicle', desc: 'Add vehicle details. Starts as UNAPPROVED.' },
+                    { num: '2', title: 'Induct Driver', desc: 'Onboard new drivers and link their accounts.' },
+                    { num: '3', title: 'Map Driver-Vehicle', desc: 'Pair them under Mappings for Admin review.' },
+                    { num: '4', title: 'Wait for Approval', desc: 'Admin must approve the Vehicle, Driver & Mapping.' },
+                    { num: '5', title: 'Plan Trips', desc: 'Pair approved mappings with routes, assign employee bookings.' },
+                  ].map((step) => (
+                    <div key={step.num} className="d-flex align-items-start gap-3 p-3 rounded-3" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                      <div className="flex-shrink-0 rounded-circle bg-primary d-flex align-items-center justify-content-center fw-bold" style={{ width: '28px', height: '28px', fontSize: '0.8rem' }}>
+                        {step.num}
+                      </div>
+                      <div>
+                        <p className="fw-semibold mb-0 small">{step.title}</p>
+                        <p className="text-secondary mb-0" style={{ fontSize: '0.8rem' }}>{step.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="card-body p-4">
-              <ol className="list-group list-group-numbered bg-dark text-white rounded">
-                <li className="list-group-item bg-transparent text-white border-secondary">
-                  <strong>Induct Vehicle:</strong> Add details in the Vehicle module (Starts as <em>UNAPPROVED</em>).
-                </li>
-                <li className="list-group-item bg-transparent text-white border-secondary">
-                  <strong>Induct Driver:</strong> Onboard new drivers and link their Admin usernames.
-                </li>
-                <li className="list-group-item bg-transparent text-white border-secondary">
-                  <strong>Map Driver-Vehicle:</strong> Pair them under Mappings and submit for Admin review.
-                </li>
-                <li className="list-group-item bg-transparent text-white border-secondary">
-                  <strong>Wait for Approval:</strong> Admin must approve the Vehicle, Driver, and Mapping.
-                </li>
-                <li className="list-group-item bg-transparent text-white border-secondary">
-                  <strong>Plan Trips:</strong> Go to Trip assignment, pair approved mappings with routes, and assign employee bookings.
-                </li>
-              </ol>
-            </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </div>

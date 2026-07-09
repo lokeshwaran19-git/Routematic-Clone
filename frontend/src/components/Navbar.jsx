@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { LogOut, Menu } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ toggleSidebar }) => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -14,28 +15,54 @@ const Navbar = () => {
   if (!user) return null;
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary px-4 py-3">
-      <div className="container-fluid">
-        <span className="navbar-brand mb-0 h1 fw-normal text-muted">
-          Welcome, <strong className="text-white">{user.name}</strong>
-        </span>
-        
+    <nav className="navbar navbar-expand-lg glass-panel border-0 border-bottom sticky-top px-3 py-3 mx-2 mt-2 mb-4 rounded-3 z-3">
+      <div className="container-fluid px-0">
         <div className="d-flex align-items-center gap-3">
-          <span className="badge bg-primary px-3 py-2 rounded-pill font-monospace text-uppercase" style={{ fontSize: '0.8rem', letterSpacing: '0.05em' }}>
+          {/* Hamburger Menu for Mobile */}
+          <button 
+            className="btn btn-link text-white d-lg-none p-0 border-0"
+            onClick={toggleSidebar}
+          >
+            <Menu size={28} />
+          </button>
+
+          <span className="navbar-brand mb-0 h1 fw-normal text-secondary d-none d-sm-block">
+            Welcome, <strong className="text-white">{user.name}</strong>
+          </span>
+        </div>
+        
+        <div className="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
+          <span 
+            className="badge bg-primary px-2 py-1 px-sm-3 py-sm-2 rounded-pill font-monospace text-uppercase shadow-sm d-none d-sm-inline-block" 
+            style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}
+          >
             {user.role.replace('_', ' ')}
           </span>
-          <span className={`badge ${user.status === 'ACTIVE' ? 'bg-success' : 'bg-warning text-dark'} px-2 py-1`}>
+          <span className={`badge ${user.status === 'ACTIVE' ? 'bg-success' : 'bg-warning text-dark'} px-2 py-1 rounded-pill shadow-sm`}>
             {user.status}
           </span>
-          <button className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1 px-3 py-2" onClick={handleLogout}>
-            <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
-              <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
-              <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
-            </svg>
-            Logout
+          
+          <div className="vr bg-secondary mx-1 d-none d-sm-block"></div>
+
+          <button 
+            className="btn btn-danger btn-sm d-flex align-items-center gap-2 px-3 py-2 rounded-3 shadow-sm border-0 transition-all hover-scale"
+            onClick={handleLogout}
+            style={{ background: 'linear-gradient(135deg, #ef4444, #b91c1c)' }}
+          >
+            <LogOut size={16} />
+            <span className="d-none d-sm-inline">Logout</span>
           </button>
         </div>
       </div>
+      <style>{`
+        .hover-scale {
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-scale:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+        }
+      `}</style>
     </nav>
   );
 };
