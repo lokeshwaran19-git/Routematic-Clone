@@ -20,6 +20,7 @@ com\routematic\repository\DriverVehicleMappingRepository.class
 com\routematic\model\TransportTeam.class
 com\routematic\model\Driver.class
 com\routematic\repository\DriverRepository.class
+com\routematic\security\JwtAuthFilter.class
 com\routematic\controller\DriverController.class
 com\routematic\controller\EmployeeController.class
 com\routematic\controller\AuthController.class
@@ -28,9 +29,11 @@ com\routematic\config\WebConfig.class
 com\routematic\config\DatabaseSeeder.class
 com\routematic\exception\BadRequestException.class
 com\routematic\repository\VehicleRepository.class
+com\routematic\security\JwtUtil.class
 com\routematic\service\AuthService.class
 com\routematic\dto\UserCreationRequest.class
 com\routematic\model\Vehicle.class
+com\routematic\config\SecurityConfig.class
 com\routematic\exception\GlobalExceptionHandler.class
 com\routematic\model\Employee.class
 com\routematic\repository\RouteRepository.class

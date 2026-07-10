@@ -50,9 +50,9 @@ const TransportDashboard = () => {
       {/* Stat Cards */}
       <motion.div className="row g-3 mb-4" variants={containerVariants} initial="hidden" animate="show">
         {statCards.map((card, idx) => (
-          <motion.div key={idx} variants={itemVariants} className="col-6 col-md-3" whileHover={{ y: -4, transition: { duration: 0.2 } }}>
+          <motion.div key={idx} variants={itemVariants} className="col-12 col-sm-6 col-md-3" whileHover={{ y: -4, transition: { duration: 0.2 } }}>
             <div className="glass-panel rounded-4 p-3 h-100 position-relative overflow-hidden">
-              <div className="position-absolute top-0 end-0 p-3 opacity-10" style={{ transform: 'scale(2)' }}>
+              <div className="position-absolute top-0 end-0 p-3" style={{ transform: 'scale(2)', opacity: 0.1 }}>
                 <card.icon size={40} />
               </div>
               <div className="d-flex flex-column gap-1">

@@ -15,11 +15,11 @@ const itemVariants = {
 const StatCard = ({ title, value, icon: Icon, gradient, index }) => (
   <motion.div 
     variants={itemVariants}
-    className="col-6 col-md-4 col-lg-3"
+    className="col-12 col-sm-6 col-md-4 col-lg-3"
     whileHover={{ y: -4, transition: { duration: 0.2 } }}
   >
     <div className="glass-panel rounded-4 p-3 h-100 position-relative overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.1)' }}>
-      <div className="position-absolute top-0 end-0 p-3 opacity-10" style={{ transform: 'scale(2)' }}>
+      <div className="position-absolute top-0 end-0 p-3" style={{ transform: 'scale(2)', opacity: 0.1 }}>
         <Icon size={40} />
       </div>
       <div className="d-flex flex-column gap-1">

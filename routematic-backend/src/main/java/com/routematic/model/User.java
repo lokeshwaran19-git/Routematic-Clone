@@ -34,6 +34,9 @@ public class User {
     @Column(nullable = false, length = 100)
     private String name;
 
+    @Transient
+    private String token;
+
 	public Long getId() {
 		return id;
 	}
@@ -89,6 +92,12 @@ public class User {
 	public void setName(String name) {
 		this.name = name;
 	}
-    
-    
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

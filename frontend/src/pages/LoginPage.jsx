@@ -40,7 +40,7 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!username.trim()) {
       setError('Username is required');
       return;
@@ -49,7 +49,7 @@ const LoginPage = () => {
     setLoading(true);
     try {
       const data = await login(username, password);
-      
+
       if (data.status === 'PENDING') {
         navigate('/password-setup', { state: { username: data.username } });
       } else {
@@ -70,15 +70,15 @@ const LoginPage = () => {
         <div className="position-absolute rounded-circle" style={{ width: '30vw', height: '30vw', background: 'radial-gradient(circle, rgba(168,85,247,0.1) 0%, rgba(0,0,0,0) 70%)', bottom: '-5%', right: '-5%', filter: 'blur(40px)' }}></div>
       </div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        className="glass-panel p-4 p-md-5 rounded-4" 
+        className="glass-panel p-4 p-md-5 rounded-4"
         style={{ width: '100%', maxWidth: '420px', zIndex: 1, margin: '1rem' }}
       >
         <div className="text-center mb-5">
-          <motion.div 
+          <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
@@ -88,14 +88,14 @@ const LoginPage = () => {
             <Navigation size={32} color="white" />
           </motion.div>
           <h2 className="fw-bold text-gradient mb-1">Routematic</h2>
-          <p className="text-secondary small">Intelligent Employee Transport</p>
+          <p className="text-secondary small">Employee Transport Management System</p>
         </div>
 
         {error && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }} 
-            animate={{ opacity: 1, height: 'auto' }} 
-            className="alert alert-danger p-3 d-flex align-items-center gap-2 rounded-3 border-0 bg-danger bg-opacity-10 text-danger" 
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            className="alert alert-danger p-3 d-flex align-items-center gap-2 rounded-3 border-0 bg-danger bg-opacity-10 text-danger"
             role="alert"
           >
             <AlertCircle size={20} className="flex-shrink-0" />
@@ -143,11 +143,11 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <motion.button 
+          <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            type="submit" 
-            className="btn btn-primary btn-lg w-100 py-3 d-flex justify-content-center align-items-center gap-2 mt-2" 
+            type="submit"
+            className="btn btn-primary btn-lg w-100 py-3 d-flex justify-content-center align-items-center gap-2 mt-2"
             disabled={loading}
           >
             {loading ? (

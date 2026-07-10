@@ -24,6 +24,18 @@ import DriverManagement from './pages/DriverManagement';
 import DriverVehicleMapping from './pages/DriverVehicleMapping';
 import TripAssignment from './pages/TripAssignment';
 
+const DashboardRedirect = () => {
+  const { user } = useContext(AuthContext);
+  if (!user) return <Navigate to="/login" replace />;
+  switch (user.role) {
+    case 'ADMIN': return <Navigate to="/admin/dashboard" replace />;
+    case 'EMPLOYEE': return <Navigate to="/employee/dashboard" replace />;
+    case 'DRIVER': return <Navigate to="/driver/dashboard" replace />;
+    case 'TRANSPORT_TEAM': return <Navigate to="/transport/dashboard" replace />;
+    default: return <Navigate to="/login" replace />;
+  }
+};
+
 const AnimatedRoutes = () => {
   const location = useLocation();
   const { user } = useContext(AuthContext);
@@ -43,6 +55,10 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Redirect Root and Login when authenticated */}
+        <Route path="/" element={<DashboardRedirect />} />
+        <Route path="/login" element={<DashboardRedirect />} />
+
         {/* Admin Routes */}
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['ADMIN']}><PageTransition><AdminDashboard /></PageTransition></ProtectedRoute>} />
         <Route path="/admin/employees" element={<ProtectedRoute allowedRoles={['ADMIN']}><PageTransition><EmployeeManagement /></PageTransition></ProtectedRoute>} />
@@ -65,7 +81,7 @@ const AnimatedRoutes = () => {
         <Route path="/transport/mapping" element={<ProtectedRoute allowedRoles={['TRANSPORT_TEAM']}><PageTransition><DriverVehicleMapping /></PageTransition></ProtectedRoute>} />
         <Route path="/transport/trips" element={<ProtectedRoute allowedRoles={['TRANSPORT_TEAM']}><PageTransition><TripAssignment /></PageTransition></ProtectedRoute>} />
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
   );

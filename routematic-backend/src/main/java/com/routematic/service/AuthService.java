@@ -6,6 +6,7 @@ import com.routematic.exception.BadRequestException;
 import com.routematic.exception.ResourceNotFoundException;
 import com.routematic.model.User;
 import com.routematic.repository.UserRepository;
+import com.routematic.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     public User login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
@@ -33,6 +37,9 @@ public class AuthService {
             throw new BadRequestException("Invalid username or password");
         }
 
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        user.setToken(token);
+
         return user;
     }
 
@@ -50,6 +57,11 @@ public class AuthService {
 
         user.setPassword(request.getPassword());
         user.setStatus("ACTIVE");
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        String token = jwtUtil.generateToken(savedUser.getUsername(), savedUser.getRole());
+        savedUser.setToken(token);
+
+        return savedUser;
     }
 }
